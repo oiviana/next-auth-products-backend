@@ -13,7 +13,10 @@ import { orderRoutes } from "@routes/orders";
 export async function app(server: FastifyInstance) {
   // Middlewares
   await server.register(cors, {
-    origin: true,
+    origin: [
+      'https://next-auth-products-frontend-cog7.vercel.app', // Deploy
+      'http://localhost:3000' // Dev
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
