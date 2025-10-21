@@ -1,0 +1,168 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+   output   = "./generated/prisma" 
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CLIENT
+  SELLER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+enum ImportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  COMPLETED_WITH_ERRORS
+  FAILED
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String?
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(CLIENT)
+  isActive     Boolean  @default(true) // false => conta desativada (seller) ou excluída logicamente (cliente)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // relations
+  store     Store?
+  favorites Favorite[]
+  cart      Cart?
+  orders    Order[]        @relation("userOrders")
+  imports   CSVImportJob[]
+}
+
+model Store {
+  id        String   @id @default(uuid())
+  ownerId   String   @unique
+  name      String
+  isActive  Boolean  @default(true) // se false -> produtos ocultos
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relations
+  owner    User      @relation(fields: [ownerId], references: [id])
+  products Product[]
+}
+
+model Product {
+  id       String  @id @default(uuid())
+  storeId  String
+  store    Store   @relation(fields: [storeId], references: [id], onDelete: Cascade) // ✅ relacionamento correto
+
+  name        String
+  description String?
+  price       Float
+  imageUrl    String?
+  publishedAt DateTime @default(now())
+  isVisible   Boolean  @default(true)
+  stock       Int      @default(0)
+  soldCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // relations
+  orderItems OrderItem[]
+  favorites  Favorite[]
+  cartItems  CartItem[] 
+
+  @@index([name])
+  @@index([price])
+  @@index([publishedAt])
+  @@index([isVisible])
+  @@index([storeId])
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  userId    String
+  user      User        @relation("userOrders", fields: [userId], references: [id])
+  total     Float
+  status    OrderStatus @default(COMPLETED)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  unitPrice Float
+}
+
+model Favorite {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
+}
+
+model Cart {
+  id        String     @id @default(uuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id])
+  items     CartItem[]
+  updatedAt DateTime   @updatedAt
+  createdAt DateTime   @default(now())
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  cartId    String
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  addedAt   DateTime @default(now())
+
+  @@index([cartId])
+  @@index([productId])
+}
+
+model CSVImportJob {
+  id            String        @id @default(cuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fileUrl       String
+  status        ImportStatus  @default(PENDING)
+  progress      Int           @default(0)
+  totalRows     Int?
+  processedRows Int?
+  errorRows     Int?
+  errorFileUrl  String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
