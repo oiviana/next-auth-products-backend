@@ -11,29 +11,17 @@ import { favoriteRoutes } from "@routes/favorites";
 import { orderRoutes } from "@routes/orders";
 
 export async function app(server: FastifyInstance) {
-  // Middlewares
-  await server.register(cors, {
-    origin: [
-      'https://next-auth-products-frontend-cog7.vercel.app', // Deploy
-      'http://localhost:3000' // Dev
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
-  });
 
   await server.register(prismaPlugin);
 
   // Error handler global
   server.setErrorHandler((error, request, reply) => {
-    server.log.error(error); // log completo no console / arquivo
+    server.log.error(error);
 
-    // Tratamento de erro do Prisma
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       return reply.status(400).send({ message: error.message });
     }
 
-    // Outros erros
     return reply.status(500).send({ message: 'Erro interno do servidor' });
   });
 
