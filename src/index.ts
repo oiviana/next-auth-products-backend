@@ -19,7 +19,11 @@ export const server = Fastify({
 });
 
 server.register(cors, {
-  origin:true,
+  origin: [
+    'https://next-auth-products-frontend-cog7.vercel.app',
+    'https://next-auth-products-frontend.vercel.app/',
+    'http://localhost:3000'
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
