@@ -1,5 +1,4 @@
 import { FastifyInstance } from "fastify";
-import cors from "@fastify/cors";
 import { prismaPlugin } from "@plugins/prisma";
 import { productRoutes } from "@routes/products";
 import { userRoutes } from "@routes/users";
