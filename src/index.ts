@@ -1,7 +1,7 @@
 import Fastify from 'fastify';
-import { app } from './app';
-import authentication from '@plugins/authentication';
 import cors from '@fastify/cors';
+import authentication from '@plugins/authentication';
+import { app } from './app';
 
 const serverPort = parseInt(process.env.PORT || process.env.SERVER_PORT || '3333', 10);
 
@@ -18,34 +18,34 @@ export const server = Fastify({
   },
 });
 
-server.register(cors, {
-    origin: [
-    'https://next-auth-products-frontend-production.up.railway.app', 
-    'https://next-auth-products-frontend-cog7.vercel.app', 
-    'http://localhost:3000'
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-});
-
-// Hook para debug das requisições CORS
 server.addHook('onRequest', (request, reply, done) => {
   console.log('📨 Request received:', {
     method: request.method,
     url: request.url,
-    origin: request.headers.origin
+    origin: request.headers.origin,
   });
   done();
 });
 
-// Registrar autenticação
-server.register(authentication);
-
 const start = async () => {
   try {
+    await server.register(cors, {
+      origin: [
+        'https://next-auth-products-frontend-production.up.railway.app',
+        'https://next-auth-products-frontend-cog7.vercel.app',
+        'http://localhost:3000',
+      ],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      credentials: true,
+      preflightContinue: false,
+    });
+
+    server.register(authentication);
     await app(server);
-    await server.listen({ port: serverPort, host: "0.0.0.0" });
+
+
+    await server.listen({ port: serverPort, host: '0.0.0.0' });
     console.info(`🚀 Server running on port ${serverPort}`);
   } catch (err) {
     server.log.error(err);
