@@ -2,7 +2,7 @@ import { FastifyInstance } from "fastify";
 import { prismaPlugin } from "@plugins/prisma";
 import { productRoutes } from "@routes/products";
 import { userRoutes } from "@routes/users";
-import { Prisma } from "@prisma-generated/prisma";
+import { Prisma } from "@prisma/client";
 import { authRoutes } from "@routes/auth";
 import { uploadRoutes } from "@routes/upload";
 import { cartRoutes } from "@routes/cart";

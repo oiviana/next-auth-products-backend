@@ -17,7 +17,8 @@
       "@interfaces/*": ["./src/interfaces/*"],
       "@utils/*": ["./src/utils/*"],
       "@prisma-generated/*": ["./prisma/generated/*"],
-      "@schemas/*": ["./src/schemas/*"]
+      "@schemas/*": ["./src/schemas/*"],
+       "@prisma/client": ["./node_modules/@prisma/client"]
     }
   },
   "include": ["src", "../web/src/types/product.d.ts"]
