@@ -266,11 +266,7 @@ O sistema utiliza JWT (JSON Web Tokens) para autenticação:
 - Configura o secret do JWT
 - Cria o decorator `authenticate` para validação de rotas
 
-### Middleware de Verificação (`src/middlewares/verifyJwt.ts`)
-- Verifica a validade do token JWT
-- Retorna erro 401 se o token for inválido
-
-### Utilitário de Extração (`src/utils/getUserIdByToken.ts`)
+### Utilitário de Extração de Token (`src/utils/getUserIdByToken.ts`)
 - Extrai o ID do usuário do token JWT
 - Usado nos controllers para obter o usuário autenticado
 
