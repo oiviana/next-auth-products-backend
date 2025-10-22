@@ -1,6 +1,5 @@
 import { FastifyInstance } from "fastify";
 import { getAllProductsBySeller, createProduct, getMoreSoldProduct, countAllProductsBySeller, totalProductsSoldBySeller, getTotalRevenueBySeller, getProductsAvailableForSale, getProductDetails } from "@controllers/products";
-import { Prisma } from "@prisma-generated/prisma";
 import { FastifyRequest } from "fastify/types/request";
 
 export async function productRoutes(server: FastifyInstance) {

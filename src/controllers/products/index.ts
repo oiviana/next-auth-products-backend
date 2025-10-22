@@ -1,5 +1,4 @@
 import prisma from "@lib/prisma";
-import { Product, Prisma } from "@prisma-generated/prisma";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { getUserIdByToken } from "@utils/getUserIdByToken";
 

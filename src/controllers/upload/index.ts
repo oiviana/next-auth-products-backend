@@ -5,7 +5,7 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { getUserIdByToken } from '@utils/getUserIdByToken';
 import { parse } from 'papaparse';
 import prisma from '@lib/prisma';
-import { Prisma } from "@prisma-generated/prisma";
+import { Prisma } from "@prisma/client";
 
 // Configuração do cliente S3
 const s3Client = new S3Client({

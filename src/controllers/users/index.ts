@@ -1,5 +1,5 @@
 import prisma from "@lib/prisma";
-import { Prisma, User } from "@prisma-generated/prisma";
+import { Prisma, User } from "@prisma/client"
 import bcrypt from "bcryptjs";
 
 
