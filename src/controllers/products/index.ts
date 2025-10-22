@@ -114,7 +114,7 @@ export async function getTotalRevenueBySeller(
   }
 }
 
-//Produto mais vendido de um vendedor
+
 export async function getMoreSoldProduct(
   request: FastifyRequest,
   reply: FastifyReply
@@ -127,6 +127,9 @@ export async function getMoreSoldProduct(
         store: {
           ownerId: userId,
         },
+        soldCount: {
+          gt: 0, 
+        },
       },
       orderBy: {
         soldCount: 'desc',
@@ -134,7 +137,7 @@ export async function getMoreSoldProduct(
     });
 
     if (!mostSoldProduct) {
-      return reply.status(404).send({ message: "Nenhum produto encontrado" });
+      return reply.status(404).send({ message: "Nenhum produto vendido encontrado" });
     }
 
     return reply.send(mostSoldProduct);
