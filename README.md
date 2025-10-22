@@ -418,3 +418,4 @@ yarn docker:restart   # Reinicia containers
 ---
 
 Desenvolvido com ❤️ usando Fastify, Prisma e TypeScript por Lucas Viana
+
